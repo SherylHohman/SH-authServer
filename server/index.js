@@ -3,6 +3,7 @@ const express = require('express');
 const http = require('http');       // from node
 const bodyParser = require('body-parser');
 const morgan = require('morgan');  // server logging framework
+const mongoose = require('mongoose');
 
 // App Setup
 const app = express();
@@ -40,3 +41,10 @@ const server = http.createServer(app);
 
 server.listen(port);
 console.log('Express Server listening on: ' + port);
+
+// DB setup
+  // second 'auth' sets the name of our database
+  // rem to start 'mongod' in a separate terminal first
+  // mongo typically runs on port 27017
+mongoose.connect('mongodb://localhost:auth/auth');
+

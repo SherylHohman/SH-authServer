@@ -1,6 +1,6 @@
 const User = require('../models/user');
 // html status code for Unprocessable Entity: recognized and syntatically correct request, by semantically erroneous
-const UNPROCESSED = 422;   
+const UNPROCESSED = 422;
 
 exports.signup = function(req, res, next){
   // req: incoming data (at req.body),

@@ -4,29 +4,34 @@ exports.signup = function(req, res, next){
   // req: incoming data (at req.body),
   // res: our response  (use res.send)
   // next: for error handling
-  console.log(req.body);
-
-  // test that signups route is wired up correctly
-  // Postman post request to localhost:3090/signup
-  // should return the following json object
-  res.send({success: 'true'});
 
   // pull email and password from req.data
   const email    = req.body.email;
   const password = req.body.password;
+  console.log(email, password);
 
-  // see if user/email exists already in database
+  // search User database for given email
   User.findOne({email: email}, function(err, existingUser){
 
-    // if user with email already exists:
-    //   throw error, (or redirect to signin page)
-
+    if (existingUser) {
+      // 422 is http status code for "Bad data.."
+      return res.status(422).send({ error: 'Email already in use'});
+    }
 
     // if user email does NOT exist:
-    //   add new user/email/password to database
+    // create new user with email/password
+    const user = new User({
+      email: email,
+      password: password
+    });
 
+    // save new user to db
+    user.save(function(err){
+      if (err) { return next(err); }
 
-    //  and send response indicating user has been created
+      // on success respond that user was successfully created
+      res.send(user);
+    });
 
   });
 }

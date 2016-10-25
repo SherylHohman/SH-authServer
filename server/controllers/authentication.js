@@ -8,7 +8,6 @@ exports.signup = function(req, res, next){
   // pull email and password from req.data
   const email    = req.body.email;
   const password = req.body.password;
-  console.log(email, password);
 
   // search User database for given email
   User.findOne({email: email}, function(err, existingUser){
@@ -30,7 +29,7 @@ exports.signup = function(req, res, next){
       if (err) { return next(err); }
 
       // on success respond that user was successfully created
-      res.send(user);
+      res.send({"success": "true"});
     });
 
   });

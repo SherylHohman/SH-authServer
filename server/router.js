@@ -1,6 +1,8 @@
+const Authentication = require('./controllers/authentication');
+
 module.exports = function(app) {
-  // incoming data, our response, next: for error handling
-  app.get('/', function(req, res, next){
-    res.send(['test', 'data', 'returned from auth server']);
-  });
+  // replace dummy get request for / route, that coded its response inline,
+  // with post request for the /signup route
+  // that calls the signup function in our newly created authentication controller
+  app.post('/signup', Authentication.signup);
 }

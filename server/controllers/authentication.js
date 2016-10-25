@@ -1,6 +1,16 @@
 const User = require('../models/user');
+const jwt = require('jwt-simple');
+const config = require('../config');
+
 // html status code for Unprocessable Entity: recognized and syntatically correct request, by semantically erroneous
 const UNPROCESSED = 422;
+
+function createUserToken(user){
+
+  // jwt standard keys sub: subject, iat: issued at time, (see jwt.io)
+  const timestamp = new Date().getTime();
+  return jwt.encode({sub: user, iat: timestamp}, config.jwt_secret);
+}
 
 exports.signup = function(req, res, next){
   // req: incoming data (at req.body),
@@ -37,8 +47,8 @@ exports.signup = function(req, res, next){
     user.save(function(err){
       if (err) { return next(err); }
 
-      // on success respond that user was successfully created
-      res.send({"success": "true"});
+      // return user token (jwt) after successfully saved new user to db
+      res.send({"token": createUserToken(user)});
     });
 
   });

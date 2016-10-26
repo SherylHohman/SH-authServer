@@ -3,6 +3,8 @@ const JwtStragety = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const config = require('../config');
 const User = require('../models/user');
+const LocalStrategy = require('passport-local');
+
 
 // a Stragety is a method Passport can use for authenticating a user
 // Passport is a library for handling authentications. Usually is is used for cookie auth, however with passport-jwt, it can also be used with jwt.
@@ -13,9 +15,35 @@ const User = require('../models/user');
 // could also do github, facebook, etc. goto passport library for more info
 
 
-// JWT Strategy (new user signin, using token) ---------------
+// Local Strategy (existing user login, gets auth from email/pass, needs token)
+const localOptions = {
+  // localStrategy default looks for a username field. we have email field. map it
+  usernameField: 'email'
+};
 
-//Setup options for this JWT Strategy
+// Create Local Strategy
+const localLogin = new LocalStrategy(localOptions, function(email, password, done){
+  // Verify this email and password, call done with the user if correct
+  User.findOne({ email: email }, function(err, user){
+    if (err)   { return done(err); }
+    if (!user) { return done(null, false); }
+
+    // have user. compare passwords - is 'password'(hash+salt) === user.password
+
+
+  });
+
+  // if bad email/pass supplied, call done with false
+
+
+});
+
+
+
+
+//JWT Strategy (new user signup, has token from signup process) ---------------
+
+// Setup options for this JWT Strategy
 const jwtOptions = {
   // tell passport where to find our token,
   jwtFromRequest: ExtractJwt.fromHeader('authorization'),

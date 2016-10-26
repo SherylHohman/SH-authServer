@@ -6,10 +6,9 @@ const passport = require('passport');
 // if authenticated, dON'T create a COOKIE Session (passport's default)
 const requireAuth = passport.authenticate('jwt', { session: false });
 
-
 module.exports = function(app) {
 
-  // test passport (requireAuth) on root route (via postman)
+  // test passport (requireAuth defined above) on root route (via postman)
   app.get('/', requireAuth, function(req, res) {
     res.send({ hi: 'there' });
   });

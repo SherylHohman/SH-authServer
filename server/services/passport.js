@@ -12,6 +12,9 @@ const User = require('../models/user');
 // Stragety #2: Verify via username and password: existing user is logging in
 // could also do github, facebook, etc. goto passport library for more info
 
+
+// JWT Strategy (new user signin, using token) ---------------
+
 //Setup options for this JWT Strategy
 const jwtOptions = {
   // tell passport where to find our token,
@@ -20,15 +23,13 @@ const jwtOptions = {
   // and the key so it can be decoded
   secretOrKey: config.jwt_secret
 };
+// Create JWT Strategy
+  // payload is the DEcoded jwt token
+  // jwt will have the "sub" and "iat" properties
+  // we need the jwtsecret to decode the jwt token
 
-// Creat JWT Strategy
-// payload is the DEcoded jwt token
-// jwt will have the "sub" and "iat" properties
-// we need the jwtsecret to decode the jwt token
-
-// done is a passport method, thats called at the end of our "strategy"
+  // done is a passport method, thats called at the end of our "strategy"
 //    and handles granting/denying athentication
-
 const jwtLogin = new JwtStragety(jwtOptions, function(payload, done) {
 
   // See if the user ID in the payload exists in our db
@@ -41,7 +42,6 @@ const jwtLogin = new JwtStragety(jwtOptions, function(payload, done) {
     if (user) {
       done(null, user);
 
-      // Otherwise, call 'done' without a user object ('false') - don't validate them
       // user not found, return 'null' no error, 'false' user not found
     } else {
       done(null, false);

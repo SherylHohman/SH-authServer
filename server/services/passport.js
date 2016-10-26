@@ -21,27 +21,35 @@ const localOptions = {
   usernameField: 'email'
 };
 
-// Create Local Strategy
+// Create Local Strategy (auth via email/password, ie when logging in) ---------------
+
 const localLogin = new LocalStrategy(localOptions, function(email, password, done){
   // Verify this email and password, call done with the user if correct
   User.findOne({ email: email }, function(err, user){
+    // user not found, or db error
     if (err)   { return done(err); }
     if (!user) { return done(null, false); }
 
-    // have user. compare passwords - is 'password'(hash+salt) === user.password
+    // compare passwords - is 'password'(hash+salt) === user.password
+    // isMatch gets set by bcrypt.compare (our comparePasswords func)
+    user.comparePasswords(password, function(err, isMatch) {
+      if (err) { done(err) }
 
+      // if bad email/pass supplied, call done with false
+      if (!isMatch) { done(null, false); }
+
+      // authenticate this user!
+      // passport.done will also add user to res.user: user (uh, user.id)
+      //  which we'll make use of in: authentication.login to create their token
+      return done(null, user);
+    });
 
   });
-
-  // if bad email/pass supplied, call done with false
-
-
 });
 
 
 
-
-//JWT Strategy (new user signup, has token from signup process) ---------------
+//Create JWT Strategy (new user signup, has token from signup process) ---------------
 
 // Setup options for this JWT Strategy
 const jwtOptions = {
@@ -78,7 +86,8 @@ const jwtLogin = new JwtStragety(jwtOptions, function(payload, done) {
 
 });
 
-// Tell Passport to use this Strategy defined (above)
+// Tell Passport to use these Strategies
 passport.use(jwtLogin);
+passport.use(localLogin);
 
 

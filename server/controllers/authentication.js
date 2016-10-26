@@ -12,6 +12,15 @@ function createUserToken(user){
   return jwt.encode({sub: user, iat: timestamp}, config.jwt_secret);
 }
 
+exports.login = function(req, res, next){
+  // User has been auth'd by email and password
+  //   they just need a token
+  // in  passport.localLogin.js, our local strategy,
+  // Passport adds the user to res.user, soit's avail to us here..
+
+  res.send({ token: createUserToken(req.user) });
+}
+
 exports.signup = function(req, res, next){
   // req: incoming data (at req.body),
   // res: our response  (use res.send)
@@ -53,3 +62,4 @@ exports.signup = function(req, res, next){
 
   });
 }
+

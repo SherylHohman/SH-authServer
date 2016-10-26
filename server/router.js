@@ -1,8 +1,19 @@
 const Authentication = require('./controllers/authentication');
+const passportService = require('./services/passport');
+const passport = require('passport');
+
+// use jwt strategy, and
+// if authenticated, dON'T create a COOKIE Session (passport's default)
+const requireAuth = passport.authenticate('jwt', { session: false });
+
 
 module.exports = function(app) {
-  // replace dummy get request for / route, that coded its response inline,
-  // with post request for the /signup route
-  // that calls the signup function in our newly created authentication controller
+
+  // test passport (requireAuth) on root route (via postman)
+  app.get('/', requireAuth, function(req, res) {
+    res.send({ hi: 'there' });
+  });
+
+  // /signup route calls the signup function in our newly created authentication controller
   app.post('/signup', Authentication.signup);
 }

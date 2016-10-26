@@ -1,6 +1,6 @@
 const passport = require('passport');
 const JwtStragety = require('passport-jwt').Strategy;
-const ExtractJwt = require('passport-jwt').Extract;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
 const config = require('../config');
 const User = require('../models/user');
 
@@ -14,13 +14,11 @@ const User = require('../models/user');
 
 //Setup options for this JWT Strategy
 const jwtOptions = {
-  const jwtOptions = {
-    // tell passport where to find our token,
-    jwtFromRequest: ExtractJwt.fromHeader('authorization'),
+  // tell passport where to find our token,
+  jwtFromRequest: ExtractJwt.fromHeader('authorization'),
 
-    // and the key so it can be decoded
-    secretOrkey: config.secret
-  };
+  // and the key so it can be decoded
+  secretOrKey: config.jwt_secret
 };
 
 // Creat JWT Strategy
@@ -51,7 +49,6 @@ const jwtLogin = new JwtStragety(jwtOptions, function(payload, done) {
   });
 
 });
-
 
 // Tell Passport to use this Strategy defined (above)
 passport.use(jwtLogin);
